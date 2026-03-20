@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Integrated deployment: uses shared MinIO and Loki operator
+# from cluster-o11y-operator-demo (deployed via observability ArgoCD app)
+resources:
+- ../../base
+- s3-secret.yaml

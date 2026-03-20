@@ -1,0 +1,51 @@
+# FlowCollector - Main configuration for Network Observability
+apiVersion: flows.netobserv.io/v1beta2
+kind: FlowCollector
+metadata:
+  name: cluster
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  namespace: netobserv
+  deploymentModel: Direct
+  agent:
+    type: eBPF
+    ebpf:
+      privileged: true
+      sampling: 1
+      features:
+        - DNSTracking
+        - FlowRTT
+        - PacketDrop
+  processor:
+    addZone: true
+    multiClusterDeployment: false
+  loki:
+    mode: LokiStack
+    lokiStack:
+      name: netobserv-loki
+      namespace: netobserv
+  consolePlugin:
+    register: true
+    quickFilters:
+      - name: "Cluster external"
+        filter:
+          src_kind: "Pod"
+          dst_kind: '""'
+        default: false
+      - name: "Cluster internal"
+        filter:
+          src_kind: "Pod"
+          dst_kind: "Pod"
+        default: true
+      - name: "Ingress traffic"
+        filter:
+          dst_kind: "Pod"
+          src_kind: '""'
+        default: false
+      - name: "Inter-namespace"
+        filter:
+          src_kind: "Pod"
+          dst_kind: "Pod"
+          src_namespace: "!= DstK8S_Namespace"
+        default: false

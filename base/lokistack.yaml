@@ -1,0 +1,21 @@
+# LokiStack for Network Observability flow logs
+# The S3 secret (loki-s3-secret) is provided by the overlay
+apiVersion: loki.grafana.com/v1
+kind: LokiStack
+metadata:
+  name: netobserv-loki
+  namespace: netobserv
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  size: 1x.demo
+  storage:
+    schemas:
+      - version: v13
+        effectiveDate: "2024-10-01"
+    secret:
+      name: loki-s3-secret
+      type: s3
+  storageClassName: lvms-lvmstorage
+  tenants:
+    mode: openshift-network
