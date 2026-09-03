@@ -12,7 +12,7 @@ spec:
     type: eBPF
     ebpf:
       privileged: true
-      sampling: 1
+      sampling: 100
       features:
         - DNSTracking
         - FlowRTT
