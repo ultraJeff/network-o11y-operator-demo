@@ -17,5 +17,9 @@ spec:
       name: loki-s3-secret
       type: s3
   storageClassName: lvms-lvmstorage
+  limits:
+    global:
+      retention:
+        days: 1
   tenants:
     mode: openshift-network
